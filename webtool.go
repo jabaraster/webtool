@@ -34,6 +34,25 @@ func GetAssetsHandlerWithContentType(contentType string, assetsRoot string) func
 	return ct.staticHandler
 }
 
+func WriteJsonResponse(data interface{}, w http.ResponseWriter) {
+	b, jsonErr := json.Marshal(data)
+	if jsonErr != nil {
+		panic(jsonErr)
+	}
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	_, writeErr := w.Write(b)
+	if writeErr != nil {
+		panic(writeErr)
+	}
+}
+
+func WriteErrorJsonResponse(errorMessage string, w http.ResponseWriter) {
+	ret := map[string]interface{}{
+		"error": errorMessage;,
+	}
+	writeJsonResponse(ret, w)
+}
+
 func (e *html) handler(c web.C, w http.ResponseWriter, r *http.Request) {
 	writeHtmlResponse(e.htmlAssetsRoot+"/"+getPage(c)+".html", e.assetsRoot, w)
 }
@@ -176,23 +195,4 @@ func writeFile(file string, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(data)
-}
-
-func writeJsonResponse(data interface{}, w http.ResponseWriter) {
-	b, jsonErr := json.Marshal(data)
-	if jsonErr != nil {
-		panic(jsonErr)
-	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	_, writeErr := w.Write(b)
-	if writeErr != nil {
-		panic(writeErr)
-	}
-}
-
-func writeErrorJsonResponse(error string, w http.ResponseWriter) {
-	ret := map[string]interface{}{
-		"error": error,
-	}
-	writeJsonResponse(ret, w)
 }
