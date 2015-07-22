@@ -13,11 +13,6 @@ import (
 	"strings"
 )
 
-type html struct {
-	htmlAssetsRoot string
-	assetsRoot     string
-}
-
 func GetHtmlPathHandler(htmlPath string, assetsRoot string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		writeHtmlResponse(htmlPath, assetsRoot, w)
@@ -48,9 +43,14 @@ func WriteJsonResponse(data interface{}, w http.ResponseWriter) {
 
 func WriteErrorJsonResponse(errorMessage string, w http.ResponseWriter) {
 	ret := map[string]interface{}{
-		"error": errorMessage;,
+		"error": errorMessage,
 	}
-	writeJsonResponse(ret, w)
+	WriteJsonResponse(ret, w)
+}
+
+type html struct {
+	htmlAssetsRoot string
+	assetsRoot     string
 }
 
 func (e *html) handler(c web.C, w http.ResponseWriter, r *http.Request) {
