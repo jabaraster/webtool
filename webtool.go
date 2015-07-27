@@ -29,11 +29,16 @@ func GetAssetsHandlerWithContentType(contentType string, assetsRoot string) func
 	return ct.staticHandler
 }
 
+func WriteEmptyArrayJsonResponse(w http.ResponseWriter) {
+    WriteJsonResponse([]interface{}{}, w)
+}
+
 func WriteJsonResponse(data interface{}, w http.ResponseWriter) {
 	b, jsonErr := json.Marshal(data)
 	if jsonErr != nil {
 		panic(jsonErr)
 	}
+    fmt.Println(b)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	_, writeErr := w.Write(b)
 	if writeErr != nil {
