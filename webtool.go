@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+    "time"
 )
 
 func GetHtmlPathHandler(htmlPath string, assetsRoot string) func(http.ResponseWriter, *http.Request) {
@@ -110,7 +111,9 @@ func (e *staticFile) staticHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	plainFileName := fileInfo.name[:li]
-	writeFile(e.assetsRoot+"/"+fileInfo.directory+"/"+plainFileName, w, r)
+    s := time.Hour * 24 * 365
+    w.Header().Add("cache-control", fmt.Sprintf("max-age=%d", s)) //1年間キャッシュを有効にする
+    writeFile(e.assetsRoot+"/"+fileInfo.directory+"/"+plainFileName, w, r)
 }
 
 func parse(path string) fileInfo {
